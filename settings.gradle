@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "RLRecyclerView"
 include ':app'
-include ':library'
+include ':rlrecyclerview'
