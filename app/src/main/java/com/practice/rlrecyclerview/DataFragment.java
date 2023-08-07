@@ -48,7 +48,7 @@ public class DataFragment extends Fragment {
                             for (int i = 0; i < 10; ++i) {
                                 resp.add(data + (i + page * 10));
                             }
-                            Thread.sleep(1000);
+                            Thread.sleep(3000);
                         } catch (Exception e) {
 
                         }
