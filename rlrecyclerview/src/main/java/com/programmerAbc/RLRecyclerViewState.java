@@ -44,6 +44,13 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
         this.recyclerViewState = recyclerViewState;
     }
 
+    public void firstRefreshWhenFirstShow() {
+        if (getCurrentState() == RLRecyclerViewState.STATE_FIRST_SHOW) {
+            firstRefresh();
+        }
+    }
+
+
     public List<T> getAllData() {
         return new ArrayList<>(allData);
     }
@@ -150,6 +157,7 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
                     case STATE_FIRST_REFRESHING:
                     case STATE_PULL_REFRESHING:
                         page = 0;
+                        break;
                     default:
                         page++;
                         break;

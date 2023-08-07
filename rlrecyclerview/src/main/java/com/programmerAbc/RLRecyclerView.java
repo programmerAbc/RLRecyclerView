@@ -38,6 +38,7 @@ public class RLRecyclerView extends FrameLayout {
     SmartRefreshLayout refreshLayout;
     RecyclerView rv;
     RLRecyclerViewAdapter mAdapter;
+    LifecycleOwner lifecycleOwner;
 
 
     public RLRecyclerView(@NonNull Context context) {
@@ -90,6 +91,7 @@ public class RLRecyclerView extends FrameLayout {
     public void bind(LifecycleOwner lifecycleOwner, RLRecyclerViewAdapter adapter, RecyclerView.LayoutManager layoutManager, RLRecyclerViewState state) {
         this.rlrvState = state;
         this.mAdapter = adapter;
+        this.lifecycleOwner = lifecycleOwner;
         rv.setLayoutManager(layoutManager);
         mAdapter.setNewInstance(rlrvState.getAllData());
         refreshLayout.setEnableRefresh(!rlrvState.isDisableManualRefresh());
@@ -142,7 +144,7 @@ public class RLRecyclerView extends FrameLayout {
                     }
                 }
         );
-        state.state.observe(lifecycleOwner, new Observer<Integer>() {
+        state.getState().observe(lifecycleOwner, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer != null) {
@@ -160,6 +162,12 @@ public class RLRecyclerView extends FrameLayout {
 
 
     public void unbind() {
+        try {
+            rlrvState.getState().removeObservers(lifecycleOwner);
+        } catch (Exception e) {
+        }
+
+
         try {
             rlrvState.saveAllData(mAdapter.getData());
         } catch (Exception e) {
