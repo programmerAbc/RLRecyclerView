@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -173,6 +174,7 @@ public class RLRecyclerView extends FrameLayout {
         try {
             rlrvState.getState().removeObservers(lifecycleOwner);
         } catch (Exception e) {
+            Log.e("RLRV", "unbind: "+Log.getStackTraceString(e));
         }
 
 

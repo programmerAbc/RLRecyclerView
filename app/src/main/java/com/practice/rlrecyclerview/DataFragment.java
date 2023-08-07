@@ -48,7 +48,7 @@ public class DataFragment extends Fragment {
                             for (int i = 0; i < 10; ++i) {
                                 resp.add(data + (i + page * 10));
                             }
-                            Thread.sleep(3000);
+                            Thread.sleep(300);
                         } catch (Exception e) {
 
                         }
@@ -92,7 +92,7 @@ public class DataFragment extends Fragment {
                 Navigation.findNavController(DataFragment.this.getView()).navigate(directions);
             }
         });
-        bd.rlrv.bind(this, adapter, new LinearLayoutManager(getContext()), rlrvstate);
+        bd.rlrv.bind(getViewLifecycleOwner(), adapter, new LinearLayoutManager(getContext()), rlrvstate);
         rlrvstate.firstRefreshWhenFirstShow();
     }
 
