@@ -48,6 +48,11 @@ dependencies {
 
 afterEvaluate {
     publishing {
+        repositories {
+            mavenLocal()
+        }
+
+
         publications {
             release(MavenPublication) {
                 from components.release
@@ -58,7 +63,6 @@ afterEvaluate {
         }
     }
 }
-
 
 
 //task comps {
