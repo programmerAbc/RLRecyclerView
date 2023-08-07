@@ -50,6 +50,10 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
         }
     }
 
+    public void copyAllDataToRespData() {
+        respData.clear();
+        respData.addAll(allData);
+    }
 
     public List<T> getAllData() {
         return new ArrayList<>(allData);

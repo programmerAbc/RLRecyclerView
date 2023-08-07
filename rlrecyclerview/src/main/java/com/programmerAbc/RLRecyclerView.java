@@ -94,6 +94,14 @@ public class RLRecyclerView extends FrameLayout {
         this.lifecycleOwner = lifecycleOwner;
         rv.setLayoutManager(layoutManager);
         mAdapter.setNewInstance(rlrvState.getAllData());
+        rlrvState.clearRespData();
+        switch (rlrvState.getCurrentState()){
+            case RLRecyclerViewState.STATE_REFRESH_SUCCESS:
+                rlrvState.copyAllDataToRespData();
+                break;
+        }
+
+
         refreshLayout.setEnableRefresh(!rlrvState.isDisableManualRefresh());
         refreshLayout.setBackgroundResource(rlrvState.getBackgroundResId());
         switch (rlrvState.getHeaderStyle()) {
