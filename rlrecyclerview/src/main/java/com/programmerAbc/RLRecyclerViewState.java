@@ -45,12 +45,24 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
     }
 
     public List<T> getAllData() {
-        return allData;
+        return new ArrayList<>(allData);
     }
 
-    public List<T> getRespData() {
-        return respData;
+    public List<T> getRespDataAndClear() {
+        List<T> data = new ArrayList<>(respData);
+        respData.clear();
+        return data;
     }
+
+    public void clearRespData() {
+        respData.clear();
+    }
+
+    public void saveAllData(List<T> data) {
+        allData.clear();
+        allData.addAll(data);
+    }
+
 
     public int getPage() {
         return page;
@@ -180,11 +192,10 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
                 case STATE_FIRST_REFRESHING:
                 case STATE_PULL_REFRESHING:
                     allData.clear();
+                    respData.clear();
                     if (data != null) {
                         allData.addAll(data);
-                        respData = data;
-                    } else {
-                        respData.clear();
+                        respData.addAll(data);
                     }
                     if (isLast) {
                         state.setValue(STATE_NO_MORE_DATA);
@@ -193,11 +204,10 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
                     }
                     break;
                 default:
+                    respData.clear();
                     if (data != null) {
                         allData.addAll(data);
-                        respData = data;
-                    } else {
-                        respData.clear();
+                        respData.addAll(data);
                     }
                     if (isLast) {
                         state.setValue(STATE_NO_MORE_DATA);
