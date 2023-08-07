@@ -1,4 +1,4 @@
-package com.practice.rlrecyclerview;
+package com.programmerAbc;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

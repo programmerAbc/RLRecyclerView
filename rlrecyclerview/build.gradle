@@ -1,9 +1,11 @@
 plugins {
     id 'com.android.library'
+    id 'maven-publish'
 }
 
+
 android {
-    namespace 'com.practice.rlrecyclerview'
+    namespace 'com.programmerAbc.rlrv'
     compileSdk 31
     resourcePrefix 'rlrv_'
     defaultConfig {
@@ -23,6 +25,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
@@ -32,9 +39,30 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7"
-    implementation  'io.github.scwang90:refresh-layout-kernel:2.0.6'      //核心必须依赖
-    implementation  'io.github.scwang90:refresh-header-classics:2.0.6'    //经典刷新头
+    implementation 'io.github.scwang90:refresh-layout-kernel:2.0.6'      //核心必须依赖
+    implementation 'io.github.scwang90:refresh-header-classics:2.0.6'    //经典刷新头
     implementation "androidx.recyclerview:recyclerview:1.2.1"
-    implementation  'io.github.scwang90:refresh-header-material:2.0.6'    //谷歌刷新头
+    implementation 'io.github.scwang90:refresh-header-material:2.0.6'    //谷歌刷新头
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.3.1'
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = "com.programmerAbc"
+                artifactId = "rlrv"
+                version = "1.0.0-SNAPSHOT"
+            }
+        }
+    }
+}
+
+
+
+//task comps {
+//    afterEvaluate {
+//        println("Components: " + components*.name)
+//    }
+//}
