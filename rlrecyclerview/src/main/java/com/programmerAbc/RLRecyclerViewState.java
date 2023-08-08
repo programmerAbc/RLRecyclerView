@@ -129,6 +129,7 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
     }
 
     public RLRecyclerViewState(Callback<T> callback) {
+        page = 0;
         errorLayoutResId = R.layout.rlrv_error_layout;
         loadingLayoutResId = R.layout.rlrv_loading_layout;
         emptyLayoutResId = R.layout.rlrv_empyt_layout;
@@ -170,7 +171,7 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
                 page++;
                 state.setValue(nextState);
                 callback.loadData(this, page, this);
-            }else if (currentState==STATE_LOAD_MORE_FAIL){
+            } else if (currentState == STATE_LOAD_MORE_FAIL) {
                 state.setValue(nextState);
                 callback.loadData(this, page, this);
             }
