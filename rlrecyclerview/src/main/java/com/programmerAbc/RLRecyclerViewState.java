@@ -150,7 +150,8 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
 
 
     private void loadData(int nextState) {
-        switch (getCurrentState()) {
+        int currentState = getCurrentState();
+        switch (currentState) {
             case STATE_FIRST_SHOW:
             case STATE_LOAD_MORE_COMPLETE:
             case STATE_LOAD_MORE_FAIL:
@@ -159,12 +160,16 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
             case STATE_REFRESH_ERROR: {
                 switch (nextState) {
                     case STATE_FIRST_REFRESHING:
-                    case STATE_PULL_REFRESHING:
+                    case STATE_PULL_REFRESHING: {
                         page = 0;
                         break;
-                    default:
-                        page++;
+                    }
+                    default: {
+                        if (currentState == STATE_LOAD_MORE_COMPLETE||currentState==STATE_REFRESH_SUCCESS) {
+                            page++;
+                        }
                         break;
+                    }
                 }
                 state.setValue(nextState);
                 callback.loadData(this, page, this);

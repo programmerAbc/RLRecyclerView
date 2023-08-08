@@ -21,6 +21,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.practice.rlrecyclerview.databinding.DataFragmentBinding;
 import com.programmerAbc.LoadDataResult;
+import com.programmerAbc.RLRecyclerView;
 import com.programmerAbc.RLRecyclerViewState;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class DataFragment extends Fragment {
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                loadDataResult.result(true, "", false, resp);
+                                loadDataResult.result(page<5, "", false, resp);
                             }
                         });
                     }
@@ -64,6 +65,7 @@ public class DataFragment extends Fragment {
 
             }
         });
+        rlrvstate.setHeaderStyle(RLRecyclerView.HEADER_STYLE_IOS);
 
     }
 
