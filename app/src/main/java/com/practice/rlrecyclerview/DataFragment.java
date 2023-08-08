@@ -56,7 +56,7 @@ public class DataFragment extends Fragment {
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                loadDataResult.result(true, "", page > 5, resp);
+                                loadDataResult.result(true, "", true, resp);
                             }
                         });
                     }
@@ -66,7 +66,7 @@ public class DataFragment extends Fragment {
             }
         });
         rlrvstate.setHeaderStyle(RLRecyclerView.HEADER_STYLE_MATERIAL);
-        rlrvstate.setAutoHideFooter(true);
+        rlrvstate.setAutoHideFooter(false);
     }
 
     @Override
