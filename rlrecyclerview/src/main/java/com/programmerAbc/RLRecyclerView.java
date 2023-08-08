@@ -24,8 +24,6 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
-import java.util.ArrayList;
-
 
 public class RLRecyclerView extends FrameLayout {
     public static final int HEADER_STYLE_MATERIAL = 0;
@@ -94,9 +92,10 @@ public class RLRecyclerView extends FrameLayout {
         this.mAdapter = adapter;
         this.lifecycleOwner = lifecycleOwner;
         rv.setLayoutManager(layoutManager);
-        mAdapter.setNewInstance(rlrvState.getAllData());
+        mAdapter.setList(rlrvState.getAllData());
         rlrvState.clearRespData();
-        switch (rlrvState.getCurrentState()){
+        switch (rlrvState.getCurrentState()) {
+            case RLRecyclerViewState.STATE_REFRESH_SUCCESS_NO_MORE_DATA:
             case RLRecyclerViewState.STATE_REFRESH_SUCCESS:
                 rlrvState.copyAllDataToRespData();
                 break;
@@ -174,7 +173,7 @@ public class RLRecyclerView extends FrameLayout {
         try {
             rlrvState.getState().removeObservers(lifecycleOwner);
         } catch (Exception e) {
-            Log.e("RLRV", "unbind: "+Log.getStackTraceString(e));
+            Log.e("RLRV", "unbind: " + Log.getStackTraceString(e));
         }
 
 
@@ -226,18 +225,30 @@ public class RLRecyclerView extends FrameLayout {
                 refreshLayout.setEnableRefresh(false);
                 break;
             case RLRecyclerViewState.STATE_REFRESH_SUCCESS:
-                mAdapter.setNewInstance(rlrvState.getRespDataAndClear());
+                mAdapter.setList(rlrvState.getRespDataAndClear());
                 hideCoverLayout();
                 refreshLayout.finishRefresh();
                 refreshLayout.setEnableRefresh(!rlrvState.isDisableManualRefresh());
                 mAdapter.getLoadMoreModule().setEnableLoadMore(true);
                 break;
-            case RLRecyclerViewState.STATE_NO_MORE_DATA:
+
+
+            case RLRecyclerViewState.STATE_REFRESH_SUCCESS_NO_MORE_DATA:
+                mAdapter.setList(rlrvState.getRespDataAndClear());
+                hideCoverLayout();
+                refreshLayout.finishRefresh();
+                refreshLayout.setEnableRefresh(!rlrvState.isDisableManualRefresh());
+                mAdapter.getLoadMoreModule().setEnableLoadMore(true);
+                mAdapter.getLoadMoreModule().loadMoreEnd(rlrvState.isAutoHideFooter());
+                break;
+
+
+            case RLRecyclerViewState.STATE_LOAD_MORE_COMPLETE_NO_MORE_DATA:
                 mAdapter.addData(rlrvState.getRespDataAndClear());
                 hideCoverLayout();
                 refreshLayout.finishRefresh();
                 refreshLayout.setEnableRefresh(!rlrvState.isDisableManualRefresh());
-                mAdapter.getLoadMoreModule().loadMoreEnd(rlrvState.getPage() == 0 && rlrvState.isAutoHideFooter());
+                mAdapter.getLoadMoreModule().loadMoreEnd();
                 break;
             case RLRecyclerViewState.STATE_LOAD_MORE_COMPLETE:
                 mAdapter.addData(rlrvState.getRespDataAndClear());

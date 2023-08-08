@@ -49,14 +49,14 @@ public class DataFragment extends Fragment {
                             for (int i = 0; i < 10; ++i) {
                                 resp.add(data + (i + page * 10));
                             }
-                            Thread.sleep(300);
+                            Thread.sleep(100);
                         } catch (Exception e) {
 
                         }
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                loadDataResult.result(page<5, "", false, resp);
+                                loadDataResult.result(true, "", page > 5, resp);
                             }
                         });
                     }
@@ -65,8 +65,8 @@ public class DataFragment extends Fragment {
 
             }
         });
-        rlrvstate.setHeaderStyle(RLRecyclerView.HEADER_STYLE_IOS);
-
+        rlrvstate.setHeaderStyle(RLRecyclerView.HEADER_STYLE_MATERIAL);
+        rlrvstate.setAutoHideFooter(true);
     }
 
     @Override

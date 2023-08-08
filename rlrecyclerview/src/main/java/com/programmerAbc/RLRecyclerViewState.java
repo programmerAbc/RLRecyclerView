@@ -18,9 +18,10 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
     public static final int STATE_REFRESH_ERROR = 3;
     public static final int STATE_REFRESH_SUCCESS = 4;
     public static final int STATE_LOADING_MORE = 5;
-    public static final int STATE_NO_MORE_DATA = 6;
+    public static final int STATE_LOAD_MORE_COMPLETE_NO_MORE_DATA = 6;
     public static final int STATE_LOAD_MORE_COMPLETE = 7;
     public static final int STATE_LOAD_MORE_FAIL = 8;
+    public static final int STATE_REFRESH_SUCCESS_NO_MORE_DATA = 9;
 
     MutableLiveData<Integer> state;
     List<T> allData = new ArrayList<>();
@@ -151,32 +152,28 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
 
     private void loadData(int nextState) {
         int currentState = getCurrentState();
-        switch (currentState) {
-            case STATE_FIRST_SHOW:
-            case STATE_LOAD_MORE_COMPLETE:
-            case STATE_LOAD_MORE_FAIL:
-            case STATE_REFRESH_SUCCESS:
-            case STATE_NO_MORE_DATA:
-            case STATE_REFRESH_ERROR: {
-                switch (nextState) {
-                    case STATE_FIRST_REFRESHING:
-                    case STATE_PULL_REFRESHING: {
-                        page = 0;
-                        break;
-                    }
-                    default: {
-                        if (currentState == STATE_LOAD_MORE_COMPLETE||currentState==STATE_REFRESH_SUCCESS) {
-                            page++;
-                        }
-                        break;
-                    }
-                }
+        if (nextState == STATE_FIRST_REFRESHING || nextState == STATE_PULL_REFRESHING) {
+            if (currentState == STATE_FIRST_SHOW ||
+                    currentState == STATE_LOAD_MORE_COMPLETE ||
+                    currentState == STATE_LOAD_MORE_FAIL ||
+                    currentState == STATE_REFRESH_SUCCESS ||
+                    currentState == STATE_REFRESH_SUCCESS_NO_MORE_DATA ||
+                    currentState == STATE_LOAD_MORE_COMPLETE_NO_MORE_DATA ||
+                    currentState == STATE_REFRESH_ERROR
+            ) {
+                page = 0;
                 state.setValue(nextState);
                 callback.loadData(this, page, this);
-                break;
             }
-            default:
-                break;
+        } else if (nextState == STATE_LOADING_MORE) {
+            if (currentState == STATE_LOAD_MORE_COMPLETE || currentState == STATE_REFRESH_SUCCESS) {
+                page++;
+                state.setValue(nextState);
+                callback.loadData(this, page, this);
+            }else if (currentState==STATE_LOAD_MORE_FAIL){
+                state.setValue(nextState);
+                callback.loadData(this, page, this);
+            }
         }
     }
 
@@ -214,7 +211,11 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
                         allData.addAll(data);
                         respData.addAll(data);
                     }
-                    state.setValue(STATE_REFRESH_SUCCESS);
+                    if (isLast) {
+                        state.setValue(STATE_REFRESH_SUCCESS_NO_MORE_DATA);
+                    } else {
+                        state.setValue(STATE_REFRESH_SUCCESS);
+                    }
                     break;
                 default:
                     respData.clear();
@@ -223,7 +224,7 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
                         respData.addAll(data);
                     }
                     if (isLast) {
-                        state.setValue(STATE_NO_MORE_DATA);
+                        state.setValue(STATE_LOAD_MORE_COMPLETE_NO_MORE_DATA);
                     } else {
                         state.setValue(STATE_LOAD_MORE_COMPLETE);
                     }
