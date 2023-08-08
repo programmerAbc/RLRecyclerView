@@ -209,11 +209,7 @@ public class RLRecyclerViewState<T> implements LoadDataResult<T> {
                         allData.addAll(data);
                         respData.addAll(data);
                     }
-                    if (isLast) {
-                        state.setValue(STATE_NO_MORE_DATA);
-                    } else {
-                        state.setValue(STATE_REFRESH_SUCCESS);
-                    }
+                    state.setValue(STATE_REFRESH_SUCCESS);
                     break;
                 default:
                     respData.clear();
