@@ -11,8 +11,11 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
@@ -25,7 +28,8 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 
-public class RLRecyclerView extends FrameLayout {
+public class RLRecyclerView extends FrameLayout implements LifecycleObserver {
+    public static final String TAG = "RLRecyclerView";
     public static final int HEADER_STYLE_MATERIAL = 0;
     public static final int HEADER_STYLE_CUSTOM = 1;
     public static final int HEADER_STYLE_IOS = 2;
@@ -166,17 +170,12 @@ public class RLRecyclerView extends FrameLayout {
             } catch (Exception e) {
             }
         }
+        lifecycleOwner.getLifecycle().addObserver(this);
     }
 
 
-    public void unbind() {
-        try {
-            rlrvState.getState().removeObservers(lifecycleOwner);
-        } catch (Exception e) {
-            Log.e("RLRV", "unbind: " + Log.getStackTraceString(e));
-        }
-
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    public void unbindInternal() {
         try {
             rlrvState.saveAllData(mAdapter.getData());
         } catch (Exception e) {
@@ -191,10 +190,17 @@ public class RLRecyclerView extends FrameLayout {
         try {
             rlrvState.setRecyclerViewState(rv.getLayoutManager().onSaveInstanceState());
         } catch (Exception e) {
-
+            Log.e(TAG, "unbindInternal: ");
         }
 
         rv.setAdapter(null);
+    }
+
+    /**
+     * @deprecated 不需要手动调用这个方法了
+     */
+    @Deprecated
+    public void unbind() {
     }
 
     private void handleStateChanged(int value) {
