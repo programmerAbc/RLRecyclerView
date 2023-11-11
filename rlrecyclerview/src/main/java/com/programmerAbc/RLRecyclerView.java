@@ -152,7 +152,20 @@ public class RLRecyclerView extends FrameLayout implements LifecycleObserver {
                 new OnLoadMoreListener() {
                     @Override
                     public void onLoadMore() {
-                        state.loadMore();
+                        try {
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        state.loadMore();
+                                    } catch (Exception e) {
+                                    }
+                                }
+                            });
+                        } catch (Exception e) {
+
+                        }
+
                     }
                 }
         );
